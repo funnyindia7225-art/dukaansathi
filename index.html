@@ -75,8 +75,6 @@ select.form-input{appearance:none;}
 </style>
 </head>
 <body>
-
-<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">
@@ -102,14 +100,10 @@ select.form-input{appearance:none;}
     </div>
   </div>
 </div>
-
-<!-- LOADING -->
 <div id="loading-overlay" class="loading-overlay">
   <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   <span id="loading-text">Loading...</span>
 </div>
-
-<!-- APP -->
 <div id="app-screen">
   <header>
     <div class="logo">
@@ -121,15 +115,12 @@ select.form-input{appearance:none;}
     </div>
     <button class="logout-btn" id="logout-btn">🚪</button>
   </header>
-
   <div class="tabs">
     <button class="tab active" data-tab="dashboard">🏠 Home</button>
     <button class="tab" data-tab="udhaar">💳 Credit</button>
     <button class="tab" data-tab="stock">📦 Stock</button>
     <button class="tab" data-tab="bill">📄 Bill</button>
   </div>
-
-  <!-- DASHBOARD -->
   <div class="section active" id="sec-dashboard">
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-icon">💳</div><div class="stat-value" id="stat-udhaar">₹0</div><div class="stat-label">Total Credit</div></div>
@@ -152,8 +143,6 @@ select.form-input{appearance:none;}
       <div id="recent-list"><div class="empty"><div class="empty-icon">📝</div><p>No transactions yet</p></div></div>
     </div>
   </div>
-
-  <!-- CREDIT -->
   <div class="section" id="sec-udhaar">
     <div class="card">
       <div class="card-title">➕ Add New Credit</div>
@@ -170,8 +159,6 @@ select.form-input{appearance:none;}
       <div id="udhaar-list"><div class="empty"><div class="empty-icon">👤</div><p>No customers yet</p></div></div>
     </div>
   </div>
-
-  <!-- STOCK -->
   <div class="section" id="sec-stock">
     <div class="card">
       <div class="card-title">➕ Add New Product</div>
@@ -191,8 +178,6 @@ select.form-input{appearance:none;}
       <div id="stock-list"><div class="empty"><div class="empty-icon">📦</div><p>No products yet</p></div></div>
     </div>
   </div>
-
-  <!-- BILL -->
   <div class="section" id="sec-bill">
     <div class="card">
       <div class="card-title">🤖 AI Bill Generator</div>
@@ -222,121 +207,87 @@ select.form-input{appearance:none;}
     </div>
   </div>
 </div>
-
 <script>
-const SUPA_URL = 'https://hvdnejzjkndvixlrtsih.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2ZG5lanpqa25kdml4bHJ0c2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzYwNTEsImV4cCI6MjA5NDUxMjA1MX0.rcL2Vs0v81qJxihvSS47D-gqu9184YtbkjnRwG_6TMU';
-const H = {'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY};
-
-let dukaanId = null, dukaanName = '', udhaars = [], stocks = [], billLang = 'hi', currentBill = null;
-
-// LOADING
-function showLoading(txt) {
-  document.getElementById('loading-text').textContent = txt || 'Loading...';
-  document.getElementById('loading-overlay').classList.add('show');
-}
-function hideLoading() {
-  document.getElementById('loading-overlay').classList.remove('show');
-}
-
-// ERROR
-function showErr(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function hideErr() {
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-// AUTH TABS
-document.getElementById('tab-login-btn').addEventListener('click', function() {
+const SUPA_URL='https://hvdnejzjkndvixlrtsih.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2ZG5lanpqa25kdml4bHJ0c2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzYwNTEsImV4cCI6MjA5NDUxMjA1MX0.rcL2Vs0v81qJxihvSS47D-gqu9184YtbkjnRwG_6TMU';
+const H={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY};
+let dukaanId=null,dukaanName='',udhaars=[],stocks=[],billLang='hi',currentBill=null;
+function showLoading(t){document.getElementById('loading-text').textContent=t||'Loading...';document.getElementById('loading-overlay').classList.add('show');}
+function hideLoading(){document.getElementById('loading-overlay').classList.remove('show');}
+function showErr(m){const el=document.getElementById('auth-error');el.textContent=m;el.style.display='block';}
+function hideErr(){document.getElementById('auth-error').style.display='none';}
+document.getElementById('tab-login-btn').addEventListener('click',function(){
   document.getElementById('tab-login-btn').classList.add('active');
   document.getElementById('tab-signup-btn').classList.remove('active');
-  document.getElementById('login-form').style.display = 'block';
-  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('login-form').style.display='block';
+  document.getElementById('signup-form').style.display='none';
   hideErr();
 });
-
-document.getElementById('tab-signup-btn').addEventListener('click', function() {
+document.getElementById('tab-signup-btn').addEventListener('click',function(){
   document.getElementById('tab-signup-btn').classList.add('active');
   document.getElementById('tab-login-btn').classList.remove('active');
-  document.getElementById('signup-form').style.display = 'block';
-  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('signup-form').style.display='block';
+  document.getElementById('login-form').style.display='none';
   hideErr();
 });
-
-// SIGNUP
-document.getElementById('signup-btn').addEventListener('click', async function() {
-  const dukaan = document.getElementById('signup-dukaan').value.trim();
-  const email  = document.getElementById('signup-email').value.trim();
-  const pass   = document.getElementById('signup-pass').value;
-  if (!dukaan || !email || !pass) { showErr('Sab fields bharo!'); return; }
-  if (pass.length < 6) { showErr('Password min 6 characters!'); return; }
+document.getElementById('signup-btn').addEventListener('click',async function(){
+  const dukaan=document.getElementById('signup-dukaan').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const pass=document.getElementById('signup-pass').value;
+  if(!dukaan||!email||!pass){showErr('Sab fields bharo!');return;}
+  if(pass.length<6){showErr('Password min 6 characters!');return;}
   showLoading('Account ban raha hai...');
-  try {
-    const r1 = await fetch(SUPA_URL+'/auth/v1/signup', {method:'POST',headers:H,body:JSON.stringify({email,password:pass})});
-    const d1 = await r1.json();
-    if (d1.error || d1.msg) { hideLoading(); showErr(d1.error?.message || d1.msg || 'Signup failed'); return; }
-    await fetch(SUPA_URL+'/rest/v1/dukaans', {method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({owner_email:email,dukaan_name:dukaan})});
+  try{
+    const r1=await fetch(SUPA_URL+'/auth/v1/signup',{method:'POST',headers:H,body:JSON.stringify({email,password:pass})});
+    const d1=await r1.json();
+    if(d1.error||d1.msg){hideLoading();showErr(d1.error?.message||d1.msg||'Signup failed');return;}
+    await fetch(SUPA_URL+'/rest/v1/dukaans',{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({owner_email:email,dukaan_name:dukaan})});
     hideLoading();
     showErr('✅ Account ban gaya! Ab login karo.');
-    document.getElementById('login-email').value = email;
+    document.getElementById('login-email').value=email;
     document.getElementById('tab-login-btn').click();
-  } catch(e) { hideLoading(); showErr('Network error. Try again.'); }
+  }catch(e){hideLoading();showErr('Network error. Try again.');}
 });
-
-// LOGIN
-document.getElementById('login-btn').addEventListener('click', async function() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  if (!email || !pass) { showErr('Email aur password bharo!'); return; }
+document.getElementById('login-btn').addEventListener('click',async function(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!email||!pass){showErr('Email aur password bharo!');return;}
   showLoading('Login ho raha hai...');
-  try {
-    const r = await fetch(SUPA_URL+'/auth/v1/token?grant_type=password', {method:'POST',headers:H,body:JSON.stringify({email,password:pass})});
-    const d = await r.json();
-    if (d.error || d.error_description) { hideLoading(); showErr(d.error_description || d.error); return; }
-    const r2 = await fetch(SUPA_URL+'/rest/v1/dukaans?owner_email=eq.'+encodeURIComponent(email)+'&select=*', {headers:H});
-    const d2 = await r2.json();
-    if (d2.length > 0) { dukaanId = d2[0].id; dukaanName = d2[0].dukaan_name; }
+  try{
+    const r=await fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:H,body:JSON.stringify({email,password:pass})});
+    const d=await r.json();
+    if(d.error||d.error_description){hideLoading();showErr(d.error_description||d.error);return;}
+    const r2=await fetch(SUPA_URL+'/rest/v1/dukaans?owner_email=eq.'+encodeURIComponent(email)+'&select=*',{headers:H});
+    const d2=await r2.json();
+    if(d2.length>0){dukaanId=d2[0].id;dukaanName=d2[0].dukaan_name;}
     await loadAllData();
     hideLoading();
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-    document.getElementById('header-dukaan-name').textContent = dukaanName;
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('app-screen').style.display='block';
+    document.getElementById('header-dukaan-name').textContent=dukaanName;
     renderAll();
-  } catch(e) { hideLoading(); showErr('Network error. Try again.'); }
+  }catch(e){hideLoading();showErr('Network error. Try again.');}
 });
-
-// LOGOUT
-document.getElementById('logout-btn').addEventListener('click', function() {
-  dukaanId = null; dukaanName = ''; udhaars = []; stocks = [];
-  document.getElementById('app-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
+document.getElementById('logout-btn').addEventListener('click',function(){
+  dukaanId=null;dukaanName='';udhaars=[];stocks=[];
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
 });
-
-// TABS
-document.querySelectorAll('.tab').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('sec-' + btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'bill') populateBillDrop();
+    document.getElementById('sec-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='bill')populateBillDrop();
   });
 });
-
-// BILL LANG
-document.getElementById('blang-hi').addEventListener('click', function() {
-  billLang = 'hi';
-  document.getElementById('blang-hi').classList.add('active');
-  document.getElementById('blang-en').classList.remove('active');
-});
-document.getElementById('blang-en').addEventListener('click', function() {
-  billLang = 'en';
-  document.getElementById('blang-en').classList.add('active');
-  document.getElementById('blang-hi').classList.remove('active');
-});
-
-// QUICK ADD
-document.getElementById('quick-add-btn').addEventListener('click',
+document.getElementById('blang-hi').addEventListener('click',function(){billLang='hi';document.getElementById('blang-hi').classList.add('active');document.getElementById('blang-en').classList.remove('active');});
+document.getElementById('blang-en').addEventListener('click',function(){billLang='en';document.getElementById('blang-en').classList.add('active');document.getElementById('blang-hi').classList.remove('active');});
+document.getElementById('quick-add-btn').addEventListener('click',async function(){
+  const name=document.getElementById('q-name').value.trim();
+  const amount=parseFloat(document.getElementById('q-amount').value);
+  const item=document.getElementById('q-item').value.trim();
+  if(!name||!amount){alert('Name and amount required!');return;}
+  showLoading('Saving...');
+  try{const custId=await getOrCreateCustomer(name,'');await fetch(SUPA_URL+'/rest/v1/udhaars',{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({dukaan_id:
